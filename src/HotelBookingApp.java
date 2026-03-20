@@ -1,42 +1,70 @@
-import java.util.HashMap;
+import java.util.*;
 
-class RoomInventory {
+// Reservation Class
+class Reservation {
+    private String guestName;
+    private String roomType;
 
-    private HashMap<String, Integer> inventory;
-
-    RoomInventory() {
-        inventory = new HashMap<>();
+    public Reservation(String guestName, String roomType) {
+        this.guestName = guestName;
+        this.roomType = roomType;
     }
 
-    void addRoom(String type, int count) {
-        inventory.put(type, count);
+    public String getGuestName() {
+        return guestName;
     }
 
-    void displayInventory() {
-        System.out.println("Room Availability:");
-        for (String key : inventory.keySet()) {
-            System.out.println(key + " -> " + inventory.get(key));
-        }
-    }
-
-    int getAvailability(String type) {
-        return inventory.getOrDefault(type, 0);
+    public String getRoomType() {
+        return roomType;
     }
 }
 
+// Booking Queue Class
+class BookingRequestQueue {
+
+    private Queue<Reservation> requestQueue;
+
+    public BookingRequestQueue() {
+        requestQueue = new LinkedList<>();
+    }
+
+    public void addRequest(Reservation reservation) {
+        requestQueue.offer(reservation);
+    }
+
+    public Reservation getNextRequest() {
+        return requestQueue.poll();
+    }
+
+    public boolean hasPendingRequests() {
+        return !requestQueue.isEmpty();
+    }
+}
+
+// MAIN CLASS
 public class HotelBookingApp {
 
     public static void main(String[] args) {
 
-        System.out.println("Book My Stay App - UC3");
-        System.out.println("Version: 3.0\n");
+        System.out.println("Booking Request Queue\n");
 
-        RoomInventory inventory = new RoomInventory();
+        BookingRequestQueue bookingQueue = new BookingRequestQueue();
 
-        inventory.addRoom("Single Room", 5);
-        inventory.addRoom("Double Room", 3);
-        inventory.addRoom("Suite Room", 2);
+        Reservation r1 = new Reservation("Abhi", "Single");
+        Reservation r2 = new Reservation("Subha", "Double");
+        Reservation r3 = new Reservation("Vannathi", "Suite");
 
-        inventory.displayInventory();
+        bookingQueue.addRequest(r1);
+        bookingQueue.addRequest(r2);
+        bookingQueue.addRequest(r3);
+
+        while (bookingQueue.hasPendingRequests()) {
+            Reservation r = bookingQueue.getNextRequest();
+
+            System.out.println("Processing booking for Guest: "
+                    + r.getGuestName()
+                    + ", Room Type: "
+                    + r.getRoomType());
+        }
     }
 }
